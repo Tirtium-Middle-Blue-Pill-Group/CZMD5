@@ -1,14 +1,11 @@
 package tmbpg.czmd5.Data.Skill;
 
 import tmbpg.czmd5.Util.Enum.Subject;
-import tmbpg.czmd5.Util.Interface.SkillBase;
+import tmbpg.czmd5.Util.Interface.EffectBase;
+import tmbpg.czmd5.Util.Interface.SkillBase.ChineseSkill;
+import tmbpg.czmd5.Util.Interface.SkillBase.EnglishSkill;
 
-public class RememberTextbook implements SkillBase {
-  @Override
-  public Subject[] getOwner() {
-    return new Subject[] { Subject.Chinese, Subject.English };
-  }
-
+public class RememberTextbook implements ChineseSkill, EnglishSkill {
   @Override
   public int getDamage(Subject target) {
     return 0;
@@ -19,4 +16,8 @@ public class RememberTextbook implements SkillBase {
     return 0;
   }
 
+  @Override
+  public EffectBase[] getEffects() {
+    return new EffectBase[] {};
+  }
 }

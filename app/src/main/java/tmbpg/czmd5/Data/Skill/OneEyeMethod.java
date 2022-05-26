@@ -1,13 +1,15 @@
 package tmbpg.czmd5.Data.Skill;
 
+import tmbpg.czmd5.Data.Effect.Slowness;
 import tmbpg.czmd5.Util.Enum.Subject;
 import tmbpg.czmd5.Util.Interface.EffectBase;
-import tmbpg.czmd5.Util.Interface.SkillBase.EnglishSkill;
+import tmbpg.czmd5.Util.Interface.SkillBase.ChemistrySkill;
+import tmbpg.czmd5.Util.Interface.SkillBase.MathSkill;
 
-public class HaveDailyTalk implements EnglishSkill {
+public class OneEyeMethod implements MathSkill, ChemistrySkill {
   @Override
   public int getDamage(Subject target) {
-    return 10;
+    return 0;
   }
 
   @Override
@@ -17,6 +19,6 @@ public class HaveDailyTalk implements EnglishSkill {
 
   @Override
   public EffectBase[] getEffects() {
-    return new EffectBase[] {};
+    return new EffectBase[] { new Slowness() };
   }
 }
