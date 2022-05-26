@@ -44,4 +44,7 @@ public interface SkillBase {
 
   public static interface SportSkill extends SkillBase {
   }
+
+  public static interface ITSkill extends SkillBase {
+  }
 }

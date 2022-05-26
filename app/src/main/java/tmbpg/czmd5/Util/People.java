@@ -3,21 +3,25 @@ package tmbpg.czmd5.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.security.auth.Subject;
-
+import tmbpg.czmd5.Util.Enum.Direction;
+import tmbpg.czmd5.Util.Enum.Subject;
 import tmbpg.czmd5.Util.Interface.EffectBase;
 import tmbpg.czmd5.Util.Interface.SkillBase;
 
 public class People {
+  private final String name;
   private int hp, maxHp;
   private final Subject subject;
   private int damageBase;
   private int knockbackBase;
-  private float speedBase = 2;
+  private int speedBase = 2;
   private final List<SkillBase> skills = new ArrayList<>();
   private final List<EffectBase> effects = new ArrayList<>();
+  private int pos;
+  private Direction lastDir;
 
-  public People(int hp, Subject subject, int damageBase, int knockbackBase, SkillBase... skills) {
+  public People(String name, int hp, Subject subject, int damageBase, int knockbackBase, SkillBase... skills) {
+    this.name = name;
     this.hp = hp;
     this.maxHp = hp;
     this.subject = subject;
@@ -25,6 +29,33 @@ public class People {
     this.knockbackBase = knockbackBase;
     for (SkillBase skill : skills)
       this.skills.add(skill);
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public int getDamageAmount(People target) {
+    if (target.getSubject() == subject)
+      return 0;
+    return damageBase;
+  }
+
+  public int getPos() {
+    return pos;
+  }
+
+  public void moving(int delta) {
+    this.pos += delta;
+    lastDir = delta > 0 ? Direction.Forward : delta < 0 ? Direction.Backward : lastDir;
+  }
+
+  public Direction getLastDirection() {
+    return lastDir;
+  }
+
+  public void setPos(int pos) {
+    this.pos = pos;
   }
 
   public void executeEffect() {
@@ -76,11 +107,11 @@ public class People {
     return this.knockbackBase = knockbackBase;
   }
 
-  public float getSpeedBase() {
+  public int getSpeedBase() {
     return speedBase;
   }
 
-  public void setSpeedBase(float speedBase) {
+  public void setSpeedBase(int speedBase) {
     this.speedBase = speedBase;
   }
 
@@ -88,4 +119,14 @@ public class People {
     return skills;
   }
 
+  public void sendKnockBack(People source) {
+    int knockback = source.getKnockbackBase();
+    if (source.lastDir == Direction.Backward)
+      knockback *= -1;
+    this.pos += knockback;
+  }
+
+  public boolean isDead() {
+    return hp <= 0;
+  }
 }
