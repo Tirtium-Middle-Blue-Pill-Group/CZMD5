@@ -11,12 +11,12 @@ public class HighBloodPressure extends EffectBase {
 
   @Override
   public void apply(People people) {
-    people.setDamageBase(people.getDamageBase() - 2);
+    
   }
 
   @Override
   public void remove(People people) {
-    people.setDamageBase(people.getDamageBase() + 2);
+    
   }
 
   @Override

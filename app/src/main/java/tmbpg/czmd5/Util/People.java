@@ -2,33 +2,36 @@ package tmbpg.czmd5.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-import tmbpg.czmd5.Util.Enum.Direction;
+import tmbpg.czmd5.Data.GlobalSettings;
 import tmbpg.czmd5.Util.Enum.Subject;
 import tmbpg.czmd5.Util.Interface.EffectBase;
 import tmbpg.czmd5.Util.Interface.SkillBase;
 
 public class People {
   private final String name;
-  private int hp, maxHp;
+  private final Random random;
+  private int hp;
   private final Subject subject;
-  private int damageBase;
-  private int knockbackBase;
-  private int speedBase = 2;
+  private final int damageBaseMin, damageBaseMax;
   private final List<SkillBase> skills = new ArrayList<>();
   private final List<EffectBase> effects = new ArrayList<>();
-  private int pos;
-  private Direction lastDir;
 
-  public People(String name, int hp, Subject subject, int damageBase, int knockbackBase, SkillBase... skills) {
+  public People(String name, long seed, int hp, Subject subject, int damageBaseMin, int damageBaseMax,
+      SkillBase... skills) {
     this.name = name;
+    this.random = new Random(seed);
     this.hp = hp;
-    this.maxHp = hp;
     this.subject = subject;
-    this.damageBase = damageBase;
-    this.knockbackBase = knockbackBase;
+    this.damageBaseMin = damageBaseMin;
+    this.damageBaseMax = damageBaseMax;
     for (SkillBase skill : skills)
       this.skills.add(skill);
+  }
+
+  public boolean shouldAttack() {
+    return random.nextInt(GlobalSettings.attackProbability) == 0;
   }
 
   public String getName() {
@@ -38,27 +41,10 @@ public class People {
   public int getDamageAmount(People target) {
     if (target.getSubject() == subject)
       return 0;
-    return damageBase;
+    return random.nextInt(damageBaseMax - damageBaseMin + 1) + damageBaseMin;
   }
 
-  public int getPos() {
-    return pos;
-  }
-
-  public void moving(int delta) {
-    this.pos += delta;
-    lastDir = delta > 0 ? Direction.Forward : delta < 0 ? Direction.Backward : lastDir;
-  }
-
-  public Direction getLastDirection() {
-    return lastDir;
-  }
-
-  public void setPos(int pos) {
-    this.pos = pos;
-  }
-
-  public void executeEffect() {
+  public void tickEffects() {
     for (EffectBase effect : effects) {
       effect.execute(this);
       effect.tick();
@@ -75,10 +61,6 @@ public class People {
     return hp;
   }
 
-  public float getHpPercent() {
-    return (float) hp / maxHp;
-  }
-
   public void damage(int damage) {
     hp -= damage;
   }
@@ -91,42 +73,15 @@ public class People {
     return subject;
   }
 
-  public int getDamageBase() {
-    return damageBase;
-  }
-
-  public int setDamageBase(int damageBase) {
-    return this.damageBase = damageBase;
-  }
-
-  public int getKnockbackBase() {
-    return knockbackBase;
-  }
-
-  public int setKnockbackBase(int knockbackBase) {
-    return this.knockbackBase = knockbackBase;
-  }
-
-  public int getSpeedBase() {
-    return speedBase;
-  }
-
-  public void setSpeedBase(int speedBase) {
-    this.speedBase = speedBase;
-  }
-
   public List<SkillBase> getSkills() {
     return skills;
   }
 
-  public void sendKnockBack(People source) {
-    int knockback = source.getKnockbackBase();
-    if (source.lastDir == Direction.Backward)
-      knockback *= -1;
-    this.pos += knockback;
-  }
-
   public boolean isDead() {
     return hp <= 0;
+  }
+
+  public int nextInt(int size) {
+    return random.nextInt(size);
   }
 }
