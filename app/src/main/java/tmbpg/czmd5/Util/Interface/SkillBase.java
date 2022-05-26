@@ -1,11 +1,13 @@
 package tmbpg.czmd5.Util.Interface;
 
-import tmbpg.czmd5.Util.Enum.Subject;
+import tmbpg.czmd5.Util.People;
 
 public interface SkillBase {
-  public int getDamage(Subject target);
+  public String getName();
 
-  public int getKnockback();
+  public int getTriggerProb();
+
+  public int getDamage(People target);
 
   public EffectBase[] getEffects();
 

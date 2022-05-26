@@ -8,6 +8,7 @@ import tmbpg.czmd5.Data.GlobalSettings;
 import tmbpg.czmd5.Util.Enum.Subject;
 import tmbpg.czmd5.Util.Interface.EffectBase;
 import tmbpg.czmd5.Util.Interface.SkillBase;
+import tmbpg.czmd5.Util.LogUtil.TextColor;
 
 public class People {
   private final String name;
@@ -45,12 +46,16 @@ public class People {
   }
 
   public void tickEffects() {
+    List<EffectBase> timeout = new ArrayList<>();
     for (EffectBase effect : effects) {
       effect.execute(this);
       effect.tick();
-      if (effect.isTimeOut())
-        effects.remove(effect);
+      if (effect.isTimeOut()) {
+        LogUtil.log(String.format("%s 的效果 %s 已失效", this.name, effect.getName()), TextColor.MAGENTA);
+        timeout.add(effect);
+      }
     }
+    effects.removeAll(timeout);
   }
 
   public void addEffect(EffectBase effect) {

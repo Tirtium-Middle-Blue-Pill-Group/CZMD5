@@ -10,11 +10,13 @@ public abstract class EffectBase {
     return this.timeLast;
   }
 
+  public abstract String getName();
+
   public void tick() {
     timeLast++;
   }
 
-  public boolean isTimeOut(){
+  public boolean isTimeOut() {
     return timeLast >= getTime();
   }
 

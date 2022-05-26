@@ -28,8 +28,3 @@ application {
     // Define the main class for the application.
     mainClass = 'tmbpg.czmd5.Main'
 }
-
-tasks.named('test') {
-    // Use JUnit Platform for unit tests.
-    useJUnitPlatform()
-}

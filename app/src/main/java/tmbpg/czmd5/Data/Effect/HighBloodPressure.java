@@ -11,16 +11,21 @@ public class HighBloodPressure extends EffectBase {
 
   @Override
   public void apply(People people) {
-    
+
   }
 
   @Override
   public void remove(People people) {
-    
+
   }
 
   @Override
   public void execute(People people) {
     people.damage(10);
+  }
+
+  @Override
+  public String getName() {
+    return "高血压";
   }
 }
