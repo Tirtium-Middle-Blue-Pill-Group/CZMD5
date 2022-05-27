@@ -62,12 +62,13 @@ public class GameRunner {
           target.addEffect(effect);
         }
       }
-    if (target.isDead()) {
-      LogUtil.log(String.format("%s 死了", target.getName()), TextColor.RED);
-      dead.add(target);
-    }
-    for (People p : peoples)
+    for (People p : peoples) {
       p.tickEffects();
+      if (p.isDead()) {
+        LogUtil.log(String.format("%s 死了", p.getName()), TextColor.RED);
+        dead.add(p);
+      }
+    }
     peoples.removeAll(dead);
     return peoples.size() > 1;
   }
