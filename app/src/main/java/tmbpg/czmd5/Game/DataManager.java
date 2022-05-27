@@ -6,6 +6,7 @@ import java.util.Random;
 
 import tmbpg.czmd5.Data.Skill.AddHp;
 import tmbpg.czmd5.Data.Skill.CopperHydrometallurgy;
+import tmbpg.czmd5.Data.Skill.DramaPerformance;
 import tmbpg.czmd5.Data.Skill.HaveDailyTalk;
 import tmbpg.czmd5.Data.Skill.OneEyeMethod;
 import tmbpg.czmd5.Data.Skill.RelativityTheory;
@@ -19,7 +20,8 @@ public class DataManager {
   private final List<SkillBase> positiveSkills = new ArrayList<>();
 
   public DataManager(Random random) {
-    peoples.add(new People("顾志刚", random.nextLong(), 500, Subject.Math, 8, 12, new OneEyeMethod()));
+    peoples.add(
+        new People("顾志刚", random.nextLong(), 500, Subject.Math, 8, 12, new OneEyeMethod(), new DramaPerformance()));
     peoples.add(
         new People("王华", random.nextLong(), 500, Subject.English, 8, 12, new HaveDailyTalk(), new RememberTextbook()));
     peoples.add(new People("丁燕华", random.nextLong(), 500, Subject.IT, 8, 12));

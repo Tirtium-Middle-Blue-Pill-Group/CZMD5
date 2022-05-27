@@ -82,12 +82,14 @@ public class GameRunner {
               String.format("%s 额外触发技能 %s ，", source.getName(), skill2.getName()) + skill2.getMessage(source, target),
               TextColor.CYAN);
         }
+    if (target.isDead()) {
+      LogUtil.log(String.format("%s 被 %s 杀死了", target.getName(), source.getName()), TextColor.RED);
+      alivePeoples.remove(target);
+    }
     for (People p : alivePeoples) {
       p.tickEffects();
-      if (p.isDead()) {
-        LogUtil.log(String.format("%s 死了", p.getName()), TextColor.RED);
+      if (p.isDead())
         dead.add(p);
-      }
     }
     alivePeoples.removeAll(dead);
     return alivePeoples.size() > 1;

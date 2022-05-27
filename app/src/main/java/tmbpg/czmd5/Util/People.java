@@ -18,7 +18,8 @@ public class People {
   private final int damageBaseMin, damageBaseMax;
   private final List<SkillBase> skills = new ArrayList<>();
   private final List<Pair<EffectBase, People>> effects = new ArrayList<>();
-  private int score = 0, damageMul = 1, skipTurns = 0;
+  private int score = 0, skipTurns = 0;
+  private float damageMul = 1;
 
   public People(String name, long seed, int hp, Subject subject, int damageBaseMin, int damageBaseMax,
       SkillBase... skills) {
@@ -47,7 +48,7 @@ public class People {
   public int getDamageAmount(People target) {
     if (target.getSubject() == subject)
       return 0;
-    return (random.nextInt(damageBaseMax - damageBaseMin + 1) + damageBaseMin) * damageMul;
+    return (int) ((random.nextInt(damageBaseMax - damageBaseMin + 1) + damageBaseMin) * damageMul);
   }
 
   public int getSkipTurns() {
@@ -66,6 +67,13 @@ public class People {
       if (effect.getFirst().isTimeOut()) {
         LogUtil.log(String.format("%s 的效果 %s 已失效", this.name, effect.getFirst().getName()), TextColor.MAGENTA);
         timeout.add(effect);
+        effect.getFirst().remove(this);
+      }
+      if (this.isDead()) {
+        LogUtil.log(
+            String.format("%s 被 %s 施加的 %s 效果杀死了", this.name, effect.getSecond().getName(), effect.getFirst().getName()),
+            TextColor.RED);
+        return;
       }
     }
     effects.removeAll(timeout);
@@ -80,6 +88,7 @@ public class People {
         return;
       }
     effects.add(Pair.of(effect, source));
+    effect.apply(this);
   }
 
   public int getHp() {
@@ -127,7 +136,7 @@ public class People {
       this.skills.add(skill);
   }
 
-  public void setDamageMul(int damageMul) {
+  public void setDamageMul(float damageMul) {
     this.damageMul = damageMul;
   }
 
@@ -135,7 +144,7 @@ public class People {
     this.skipTurns = skipTurns;
   }
 
-  public int getDamageMul() {
+  public float getDamageMul() {
     return damageMul;
   }
 }

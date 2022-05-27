@@ -34,3 +34,13 @@ jar {
         attributes 'Main-Class': 'tmbpg.czmd5.Main'
     }
 }
+
+//编译groovy代码时采用 UTF-8
+tasks.withType(GroovyCompile) {   
+    groovyOptions.encoding = "MacRoman"   
+} 
+
+//编译JAVA文件时采用UTF-8
+tasks.withType(JavaCompile) {
+options.encoding = "UTF-8"
+}
