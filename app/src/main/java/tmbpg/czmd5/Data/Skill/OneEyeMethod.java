@@ -8,15 +8,7 @@ import tmbpg.czmd5.Util.Interface.SkillBase.ChemistrySkill;
 import tmbpg.czmd5.Util.Interface.SkillBase.MathSkill;
 
 public class OneEyeMethod implements MathSkill, ChemistrySkill {
-  @Override
-  public int getDamage(People target) {
-    return 10;
-  }
-
-  @Override
-  public EffectBase[] getEffects() {
-    return new EffectBase[] { new HighBloodPressure() };
-  }
+  public static final int damage = 10;
 
   @Override
   public int getTriggerProb() {
@@ -29,7 +21,24 @@ public class OneEyeMethod implements MathSkill, ChemistrySkill {
   }
 
   @Override
-  public boolean shouldDamage(People target) {
+  public int execute(People source, People target) {
+    target.damage(damage);
+    source.addScore(damage);
+    return damage;
+  }
+
+  @Override
+  public boolean shouldExecute(People source, People target, int lastDamage) {
     return !Subject.isOneOf(target.getSubject(), Subject.Math, Subject.Chemistry);
+  }
+
+  @Override
+  public EffectBase[] getEffects() {
+    return new EffectBase[] { new HighBloodPressure() };
+  }
+
+  @Override
+  public String getMessage(People source, People target) {
+    return String.format("对 %s 造成额外伤害 %s", target.getName(), damage);
   }
 }

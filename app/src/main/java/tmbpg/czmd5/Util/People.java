@@ -13,12 +13,12 @@ import tmbpg.czmd5.Util.LogUtil.TextColor;
 public class People {
   private final String name;
   private final Random random;
-  private int hp;
+  private int hp, maxHp;
   private final Subject subject;
   private final int damageBaseMin, damageBaseMax;
   private final List<SkillBase> skills = new ArrayList<>();
   private final List<Pair<EffectBase, People>> effects = new ArrayList<>();
-  private int score = 0;
+  private int score = 0, damageMul = 1, skipTurns = 0;
 
   public People(String name, long seed, int hp, Subject subject, int damageBaseMin, int damageBaseMax,
       SkillBase... skills) {
@@ -32,6 +32,10 @@ public class People {
       this.skills.add(skill);
   }
 
+  public int getAverageDamage() {
+    return (damageBaseMin + damageBaseMax) / 2;
+  }
+
   public boolean shouldAttack() {
     return random.nextInt(GlobalSettings.attackProbability) == 0;
   }
@@ -43,10 +47,18 @@ public class People {
   public int getDamageAmount(People target) {
     if (target.getSubject() == subject)
       return 0;
-    return random.nextInt(damageBaseMax - damageBaseMin + 1) + damageBaseMin;
+    return (random.nextInt(damageBaseMax - damageBaseMin + 1) + damageBaseMin) * damageMul;
+  }
+
+  public int getSkipTurns() {
+    return skipTurns;
   }
 
   public void tickEffects() {
+    if (skipTurns > 0) {
+      skipTurns--;
+      return;
+    }
     List<Pair<EffectBase, People>> timeout = new ArrayList<>();
     for (Pair<EffectBase, People> effect : effects) {
       effect.getFirst().execute(this, effect.getSecond());
@@ -82,6 +94,10 @@ public class People {
     this.hp = hp;
   }
 
+  public int getMaxHp() {
+    return maxHp;
+  }
+
   public Subject getSubject() {
     return subject;
   }
@@ -109,5 +125,17 @@ public class People {
   public void addSkillls(SkillBase... skills) {
     for (SkillBase skill : skills)
       this.skills.add(skill);
+  }
+
+  public void setDamageMul(int damageMul) {
+    this.damageMul = damageMul;
+  }
+
+  public void setSkipTurns(int skipTurns) {
+    this.skipTurns = skipTurns;
+  }
+
+  public int getDamageMul() {
+    return damageMul;
   }
 }

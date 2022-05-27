@@ -33,7 +33,7 @@ public class GameRunner {
     LogUtil.log("游戏结束！");
     LogUtil.log(String.format("%s 胜利", this.getWinner().getName()), TextColor.GREEN);
     for (People people : peoples)
-      LogUtil.log(String.format("%s 的得分为 %d", people.getName(), people.getScore()), TextColor.RED);
+      LogUtil.log(String.format("%s 的得分为 %d", people.getName(), people.getScore()), TextColor.WHITE);
   }
 
   /**
@@ -46,9 +46,12 @@ public class GameRunner {
       throw new RuntimeException("就一个人了你玩个锤子");
     tick++;
     List<People> dead = new ArrayList<>();
+    // 选择
     People source = alivePeoples.get(random.nextInt(alivePeoples.size()));
+    while (source.getSkipTurns() > 0)
+      source = alivePeoples.get(random.nextInt(alivePeoples.size()));
     People target = alivePeoples.get(random.nextInt(alivePeoples.size()));
-    while (target.getName().equals(source.getName()))
+    while (target.getName().equals(source.getName()) || target.getSkipTurns() > 0)
       target = alivePeoples.get(random.nextInt(alivePeoples.size()));
     int damage = source.getDamageAmount(target);
     source.addScore(damage);
@@ -57,21 +60,28 @@ public class GameRunner {
         target.getHp() + damage, target.getHp()), TextColor.YELLOW);
     for (SkillBase skill : source.getSkills())
       if (source.nextInt(skill.getTriggerProb()) == 0) {
-        if(!skill.shouldDamage(target)){
+        if (!skill.shouldExecute(source, target, damage)) {
           LogUtil.log(String.format("%s 额外触发技能 %s ， 但是没效果", source.getName(), skill.getName()), TextColor.CYAN);
           continue;
         }
-        damage = skill.getDamage(target);
-        source.addScore(damage);
-        target.damage(damage);
-        LogUtil.log(String.format("%s 额外触发技能 %s ，血量%d->%d", source.getName(), skill.getName(),
-            target.getHp() + skill.getDamage(target), target.getHp()), TextColor.CYAN);
+        skill.execute(source, target);
+        LogUtil.log(
+            String.format("%s 额外触发技能 %s ，", source.getName(), skill.getName()) + skill.getMessage(source, target),
+            TextColor.CYAN);
         for (EffectBase effect : skill.getEffects()) {
           LogUtil.log(String.format("%s 获得效果： %s ，持续 %d 回合", target.getName(), effect.getName(), effect.getTime()),
               TextColor.MAGENTA);
           target.addEffect(effect, source);
         }
       }
+    for (SkillBase skill2 : dataManager.getPositiveSkills())
+      if (source.nextInt(skill2.getTriggerProb()) == 0)
+        if (skill2.shouldExecute(source, target, damage)) {
+          skill2.execute(source, target);
+          LogUtil.log(
+              String.format("%s 额外触发技能 %s ，", source.getName(), skill2.getName()) + skill2.getMessage(source, target),
+              TextColor.CYAN);
+        }
     for (People p : alivePeoples) {
       p.tickEffects();
       if (p.isDead()) {

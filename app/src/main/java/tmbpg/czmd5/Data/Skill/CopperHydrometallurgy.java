@@ -6,6 +6,8 @@ import tmbpg.czmd5.Util.Interface.EffectBase;
 import tmbpg.czmd5.Util.Interface.SkillBase.ChemistrySkill;
 
 public class CopperHydrometallurgy implements ChemistrySkill {
+  public static final int damage = 8;
+
   @Override
   public String getName() {
     return "湿法炼铜";
@@ -17,17 +19,24 @@ public class CopperHydrometallurgy implements ChemistrySkill {
   }
 
   @Override
-  public int getDamage(People target) {
-    return 8;
+  public int execute(People source, People target) {
+    target.damage(damage);
+    source.addScore(damage);
+    return damage;
+  }
+
+  @Override
+  public boolean shouldExecute(People source, People target, int lastDamage) {
+    return target.getSubject() != Subject.Chemistry;
   }
 
   @Override
   public EffectBase[] getEffects() {
-    return new EffectBase[] {};
+    return EMPTY;
   }
 
   @Override
-  public boolean shouldDamage(People target) {
-    return target.getSubject() != Subject.Chemistry;
+  public String getMessage(People source, People target) {
+    return String.format("对 %s 造成额外伤害 %s", target.getName(), damage);
   }
 }

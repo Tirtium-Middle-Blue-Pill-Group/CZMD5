@@ -3,15 +3,19 @@ package tmbpg.czmd5.Util.Interface;
 import tmbpg.czmd5.Util.People;
 
 public interface SkillBase {
+  public static final EffectBase[] EMPTY = new EffectBase[] {};
+
   public String getName();
 
   public int getTriggerProb();
 
-  public int getDamage(People target);
+  public int execute(People source, People target);
 
   public EffectBase[] getEffects();
 
-  public boolean shouldDamage(People target);
+  public boolean shouldExecute(People source, People target, int lastDamage);
+
+  public String getMessage(People source, People target);
 
   public static interface ChineseSkill extends SkillBase {
   }
