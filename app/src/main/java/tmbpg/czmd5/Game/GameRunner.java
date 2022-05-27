@@ -57,9 +57,9 @@ public class GameRunner {
         LogUtil.log(String.format("%s 额外触发技能 %s ，血量%d->%d", source.getName(), skill.getName(),
             target.getHp() + skill.getDamage(target), target.getHp()), TextColor.CYAN);
         for (EffectBase effect : skill.getEffects()) {
-          target.addEffect(effect);
           LogUtil.log(String.format("%s 获得效果： %s ，持续%d秒", target.getName(), effect.getName(), effect.getTime()),
               TextColor.MAGENTA);
+          target.addEffect(effect);
         }
       }
     if (target.isDead()) {

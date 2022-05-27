@@ -1,13 +1,24 @@
 package tmbpg.czmd5.Util.Interface;
 
 import tmbpg.czmd5.Util.People;
-import tmbpg.czmd5.Util.Enum.Subject;
 
 public abstract class EffectBase {
   protected int timeLast = 0;
 
-  public int getTimeLast(Subject subject) {
+  public int getTimeLast() {
     return this.timeLast;
+  }
+
+  public void resetTimeLast() {
+    this.timeLast = 0;
+  }
+
+  public int getTimeRemain() {
+    return this.getTime() - this.timeLast;
+  }
+
+  public void addTime() {
+    this.timeLast -= this.getTime();
   }
 
   public abstract String getName();

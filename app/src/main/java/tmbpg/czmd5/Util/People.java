@@ -59,6 +59,12 @@ public class People {
   }
 
   public void addEffect(EffectBase effect) {
+    for (EffectBase e : effects)
+      if (e.getClass().equals(effect.getClass())) {
+        e.addTime();
+        LogUtil.log(String.format("效果 %s 叠加至 %d 秒", e.getName(), e.getTimeRemain()), TextColor.BLUE);
+        return;
+      }
     effects.add(effect);
   }
 
