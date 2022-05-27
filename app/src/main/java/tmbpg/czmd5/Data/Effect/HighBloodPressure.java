@@ -20,8 +20,9 @@ public class HighBloodPressure extends EffectBase {
   }
 
   @Override
-  public void execute(People people) {
+  public void execute(People people, People source) {
     people.damage(10);
+    source.addScore(10);
   }
 
   @Override

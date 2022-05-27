@@ -17,7 +17,8 @@ public class People {
   private final Subject subject;
   private final int damageBaseMin, damageBaseMax;
   private final List<SkillBase> skills = new ArrayList<>();
-  private final List<EffectBase> effects = new ArrayList<>();
+  private final List<Pair<EffectBase, People>> effects = new ArrayList<>();
+  private int score = 0;
 
   public People(String name, long seed, int hp, Subject subject, int damageBaseMin, int damageBaseMax,
       SkillBase... skills) {
@@ -46,26 +47,27 @@ public class People {
   }
 
   public void tickEffects() {
-    List<EffectBase> timeout = new ArrayList<>();
-    for (EffectBase effect : effects) {
-      effect.execute(this);
-      effect.tick();
-      if (effect.isTimeOut()) {
-        LogUtil.log(String.format("%s 的效果 %s 已失效", this.name, effect.getName()), TextColor.MAGENTA);
+    List<Pair<EffectBase, People>> timeout = new ArrayList<>();
+    for (Pair<EffectBase, People> effect : effects) {
+      effect.getFirst().execute(this, effect.getSecond());
+      effect.getFirst().tick();
+      if (effect.getFirst().isTimeOut()) {
+        LogUtil.log(String.format("%s 的效果 %s 已失效", this.name, effect.getFirst().getName()), TextColor.MAGENTA);
         timeout.add(effect);
       }
     }
     effects.removeAll(timeout);
   }
 
-  public void addEffect(EffectBase effect) {
-    for (EffectBase e : effects)
-      if (e.getClass().equals(effect.getClass())) {
-        e.addTime();
-        LogUtil.log(String.format("效果 %s 叠加至 %d 回合", e.getName(), e.getTimeRemain()), TextColor.BLUE);
+  public void addEffect(EffectBase effect, People source) {
+    for (Pair<EffectBase, People> e : effects)
+      if (e.getFirst().getClass().equals(effect.getClass())) {
+        e.getFirst().addTime();
+        LogUtil.log(String.format("效果 %s 叠加至 %d 回合", e.getFirst().getName(), e.getFirst().getTimeRemain()),
+            TextColor.BLUE);
         return;
       }
-    effects.add(effect);
+    effects.add(Pair.of(effect, source));
   }
 
   public int getHp() {
@@ -94,5 +96,18 @@ public class People {
 
   public int nextInt(int size) {
     return random.nextInt(size);
+  }
+
+  public int getScore() {
+    return this.score;
+  }
+
+  public void addScore(int score) {
+    this.score += score;
+  }
+
+  public void addSkillls(SkillBase... skills) {
+    for (SkillBase skill : skills)
+      this.skills.add(skill);
   }
 }

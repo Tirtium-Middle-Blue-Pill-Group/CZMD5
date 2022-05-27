@@ -6,10 +6,9 @@ import tmbpg.czmd5.Util.Interface.EffectBase;
 import tmbpg.czmd5.Util.Interface.SkillBase.EnglishSkill;
 
 public class HaveDailyTalk implements EnglishSkill {
-
   @Override
   public int getDamage(People target) {
-    return target.getSubject() == Subject.English ? 0 : 10;
+    return 10;
   }
 
   @Override
@@ -25,5 +24,10 @@ public class HaveDailyTalk implements EnglishSkill {
   @Override
   public String getName() {
     return "做DailyTalk";
+  }
+
+  @Override
+  public boolean shouldDamage(People target) {
+    return target.getSubject() != Subject.English;
   }
 }

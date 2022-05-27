@@ -11,6 +11,8 @@ public interface SkillBase {
 
   public EffectBase[] getEffects();
 
+  public boolean shouldDamage(People target);
+
   public static interface ChineseSkill extends SkillBase {
   }
 

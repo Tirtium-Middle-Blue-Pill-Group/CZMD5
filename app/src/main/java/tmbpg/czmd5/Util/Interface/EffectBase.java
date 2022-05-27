@@ -37,5 +37,5 @@ public abstract class EffectBase {
 
   public abstract void remove(People people);
 
-  public abstract void execute(People people);
+  public abstract void execute(People people, People source);
 }

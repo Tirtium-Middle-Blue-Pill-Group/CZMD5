@@ -10,7 +10,7 @@ import tmbpg.czmd5.Util.Interface.SkillBase.MathSkill;
 public class OneEyeMethod implements MathSkill, ChemistrySkill {
   @Override
   public int getDamage(People target) {
-    return Subject.isOneOf(target.getSubject(), Subject.Math, Subject.Chemistry) ? 0 : 10;
+    return 10;
   }
 
   @Override
@@ -26,5 +26,10 @@ public class OneEyeMethod implements MathSkill, ChemistrySkill {
   @Override
   public String getName() {
     return "一眼法";
+  }
+
+  @Override
+  public boolean shouldDamage(People target) {
+    return !Subject.isOneOf(target.getSubject(), Subject.Math, Subject.Chemistry);
   }
 }
