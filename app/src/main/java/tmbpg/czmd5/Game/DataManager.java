@@ -28,6 +28,7 @@ public class DataManager {
     peoples.add(new People("龚翠萍", random.nextLong(), 500, Subject.Chemistry, 8, 12, new OneEyeMethod(),
         new CopperHydrometallurgy()));
     peoples.add(new People("徐军", random.nextLong(), 500, Subject.Physics, 8, 12, new RelativityTheory()));
+    peoples.add(new People("郁缨缨", random.nextLong(), 500, Subject.Chinese, 8, 12, new RememberTextbook()));
     this.addPositiveSkill(new AddHp());
   }
 
