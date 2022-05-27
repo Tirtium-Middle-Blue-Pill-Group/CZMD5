@@ -39,6 +39,6 @@ public class OneEyeMethod implements MathSkill, ChemistrySkill {
 
   @Override
   public String getMessage(People source, People target) {
-    return String.format("对 %s 造成额外伤害 %s", target.getName(), damage);
+    return String.format("%s 无法容忍如此马虎的做题，被气的高血压了，掉血 %d", target.getName(), damage);
   }
 }

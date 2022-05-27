@@ -1,7 +1,6 @@
 package tmbpg.czmd5.Data.Skill;
 
 import tmbpg.czmd5.Util.People;
-import tmbpg.czmd5.Util.Interface.EffectBase;
 import tmbpg.czmd5.Util.Interface.SkillBase;
 
 public class AddHp implements SkillBase {
@@ -21,11 +20,6 @@ public class AddHp implements SkillBase {
   public int execute(People source, People target) {
     source.damage(damage);
     return damage;
-  }
-
-  @Override
-  public EffectBase[] getEffects() {
-    return EMPTY;
   }
 
   @Override

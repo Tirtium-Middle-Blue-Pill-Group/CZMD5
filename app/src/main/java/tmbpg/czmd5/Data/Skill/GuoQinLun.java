@@ -2,32 +2,37 @@ package tmbpg.czmd5.Data.Skill;
 
 import tmbpg.czmd5.Util.People;
 import tmbpg.czmd5.Util.Enum.Subject;
-import tmbpg.czmd5.Util.Interface.SkillBase;
+import tmbpg.czmd5.Util.Interface.SkillBase.ChineseSkill;
 
-public class RelativityTheory implements SkillBase {
+public class GuoQinLun implements ChineseSkill {
+  public static final int damage = 15;
+
   @Override
   public String getName() {
-    return "相对论";
+    return "过秦论";
   }
 
   @Override
   public int getTriggerProb() {
-    return 20;
+    return 15;
   }
 
   @Override
   public int execute(People source, People target) {
-    target.setSkipTurns(5);
+    target.damage(damage);
+    source.addScore(damage);
+    target.setSkipTurns(2);
     return 0;
   }
 
   @Override
   public boolean shouldExecute(People source, People target, int lastDamage) {
-    return target.getSubject() != Subject.Physics;
+    return target.getSubject() != Subject.Chinese;
   }
 
   @Override
   public String getMessage(People source, People target) {
-    return String.format("%s 去遨游太空了，跳过 %d 回合", target.getName(), 5);
+    return String.format("%s 背诵过秦论背崩溃了，脑子里一团浆糊，不得不休息%d回合", target.getName(), 2);
   }
+
 }

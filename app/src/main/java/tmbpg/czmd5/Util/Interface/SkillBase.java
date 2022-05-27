@@ -11,7 +11,13 @@ public interface SkillBase {
 
   public int execute(People source, People target);
 
-  public EffectBase[] getEffects();
+  default public EffectBase[] getEffects(){
+    return EMPTY;
+  }
+
+  default public EffectBase[] getEffectsForSource(){
+    return EMPTY;
+  }
 
   public boolean shouldExecute(People source, People target, int lastDamage);
 

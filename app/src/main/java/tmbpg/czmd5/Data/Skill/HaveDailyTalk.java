@@ -2,7 +2,6 @@ package tmbpg.czmd5.Data.Skill;
 
 import tmbpg.czmd5.Util.People;
 import tmbpg.czmd5.Util.Enum.Subject;
-import tmbpg.czmd5.Util.Interface.EffectBase;
 import tmbpg.czmd5.Util.Interface.SkillBase.EnglishSkill;
 
 public class HaveDailyTalk implements EnglishSkill {
@@ -31,12 +30,7 @@ public class HaveDailyTalk implements EnglishSkill {
   }
 
   @Override
-  public EffectBase[] getEffects() {
-    return EMPTY;
-  }
-
-  @Override
   public String getMessage(People source, People target) {
-    return String.format("对 %s 造成额外伤害 %s", target.getName(), damage);
+    return String.format("这给了 %s 严重心理打击（指社死，所以这也叫做deadly talk），受到伤害 %d", target.getName(), damage);
   }
 }

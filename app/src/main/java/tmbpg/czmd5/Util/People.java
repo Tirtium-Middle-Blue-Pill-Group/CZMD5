@@ -20,6 +20,7 @@ public class People {
   private final List<Pair<EffectBase, People>> effects = new ArrayList<>();
   private int score = 0, skipTurns = 0;
   private float damageMul = 1;
+  private boolean hidden = false;
 
   public People(String name, long seed, int hp, Subject subject, int damageBaseMin, int damageBaseMax,
       SkillBase... skills) {
@@ -146,5 +147,13 @@ public class People {
 
   public float getDamageMul() {
     return damageMul;
+  }
+
+  public void setHidden(boolean hidden) {
+    this.hidden = hidden;
+  }
+
+  public boolean isHidden() {
+    return hidden;
   }
 }

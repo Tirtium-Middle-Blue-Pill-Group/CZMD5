@@ -2,7 +2,6 @@ package tmbpg.czmd5.Data.Skill;
 
 import tmbpg.czmd5.Util.People;
 import tmbpg.czmd5.Util.Enum.Subject;
-import tmbpg.czmd5.Util.Interface.EffectBase;
 import tmbpg.czmd5.Util.Interface.SkillBase.ChemistrySkill;
 
 public class CopperHydrometallurgy implements ChemistrySkill {
@@ -28,11 +27,6 @@ public class CopperHydrometallurgy implements ChemistrySkill {
   @Override
   public boolean shouldExecute(People source, People target, int lastDamage) {
     return target.getSubject() != Subject.Chemistry;
-  }
-
-  @Override
-  public EffectBase[] getEffects() {
-    return EMPTY;
   }
 
   @Override

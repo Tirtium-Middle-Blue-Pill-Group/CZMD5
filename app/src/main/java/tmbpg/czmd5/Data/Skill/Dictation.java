@@ -2,11 +2,10 @@ package tmbpg.czmd5.Data.Skill;
 
 import tmbpg.czmd5.Util.People;
 import tmbpg.czmd5.Util.Enum.Subject;
-import tmbpg.czmd5.Util.Interface.EffectBase;
 import tmbpg.czmd5.Util.Interface.SkillBase.ChineseSkill;
 import tmbpg.czmd5.Util.Interface.SkillBase.EnglishSkill;
 
-public class RememberTextbook implements ChineseSkill, EnglishSkill {
+public class Dictation implements ChineseSkill, EnglishSkill {
   public static final int damage = 10;
 
   @Override
@@ -16,7 +15,7 @@ public class RememberTextbook implements ChineseSkill, EnglishSkill {
 
   @Override
   public String getName() {
-    return "全篇背诵";
+    return "默写";
   }
 
   @Override
@@ -32,12 +31,7 @@ public class RememberTextbook implements ChineseSkill, EnglishSkill {
   }
 
   @Override
-  public EffectBase[] getEffects() {
-    return EMPTY;
-  }
-
-  @Override
   public String getMessage(People source, People target) {
-    return String.format("对 %s 造成额外伤害 %s", target.getName(), damage);
+    return String.format("%s 喜迎Foolish，扣血 %d", target.getName(), damage);
   }
 }
