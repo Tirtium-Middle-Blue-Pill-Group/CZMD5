@@ -62,7 +62,7 @@ public class People {
     for (EffectBase e : effects)
       if (e.getClass().equals(effect.getClass())) {
         e.addTime();
-        LogUtil.log(String.format("效果 %s 叠加至 %d 秒", e.getName(), e.getTimeRemain()), TextColor.BLUE);
+        LogUtil.log(String.format("效果 %s 叠加至 %d 回合", e.getName(), e.getTimeRemain()), TextColor.BLUE);
         return;
       }
     effects.add(effect);

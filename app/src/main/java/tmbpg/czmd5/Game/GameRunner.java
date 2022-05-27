@@ -6,6 +6,7 @@ import java.util.Random;
 
 import tmbpg.czmd5.Data.Skill.HaveDailyTalk;
 import tmbpg.czmd5.Data.Skill.OneEyeMethod;
+import tmbpg.czmd5.Data.Skill.RememberTextbook;
 import tmbpg.czmd5.Util.LogUtil;
 import tmbpg.czmd5.Util.People;
 import tmbpg.czmd5.Util.Enum.Subject;
@@ -24,7 +25,8 @@ public class GameRunner {
 
   public void run() {
     peoples.add(new People("顾志刚", random.nextLong(), 500, Subject.Math, 8, 12, new OneEyeMethod()));
-    peoples.add(new People("王华", random.nextLong(), 500, Subject.English, 8, 12, new HaveDailyTalk()));
+    peoples.add(
+        new People("王华", random.nextLong(), 500, Subject.English, 8, 12, new HaveDailyTalk(), new RememberTextbook()));
     peoples.add(new People("丁燕华", random.nextLong(), 500, Subject.IT, 8, 12));
 
     while (this.tick())
@@ -57,7 +59,7 @@ public class GameRunner {
         LogUtil.log(String.format("%s 额外触发技能 %s ，血量%d->%d", source.getName(), skill.getName(),
             target.getHp() + skill.getDamage(target), target.getHp()), TextColor.CYAN);
         for (EffectBase effect : skill.getEffects()) {
-          LogUtil.log(String.format("%s 获得效果： %s ，持续%d秒", target.getName(), effect.getName(), effect.getTime()),
+          LogUtil.log(String.format("%s 获得效果： %s ，持续 %d 回合", target.getName(), effect.getName(), effect.getTime()),
               TextColor.MAGENTA);
           target.addEffect(effect);
         }

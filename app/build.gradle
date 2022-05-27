@@ -28,3 +28,9 @@ application {
     // Define the main class for the application.
     mainClass = 'tmbpg.czmd5.Main'
 }
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'tmbpg.czmd5.Main'
+    }
+}
