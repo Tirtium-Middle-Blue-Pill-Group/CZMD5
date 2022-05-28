@@ -10,6 +10,7 @@ import tmbpg.czmd5.Util.Interface.SkillBase;
 import tmbpg.czmd5.Util.LogUtil.TextColor;
 
 public class People {
+  public static final List<SkillBase> commonSkills = new ArrayList<>();
   private final String name;
   private final Random random;
   private int hp, maxHp;
@@ -99,7 +100,10 @@ public class People {
   }
 
   public List<SkillBase> getSkills() {
-    return skills;
+    List<SkillBase> result = new ArrayList<>();
+    result.addAll(skills);
+    result.addAll(commonSkills);
+    return result;
   }
 
   public boolean isDead() {

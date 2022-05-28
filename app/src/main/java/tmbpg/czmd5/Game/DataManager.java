@@ -31,9 +31,8 @@ public class DataManager {
         new CopperHydrometallurgy()));
     peoples.add(new People("徐军", random.nextLong(), 500, Subject.Physics, 8, 12, new RelativityTheory()));
     peoples.add(new People("郁缨缨", random.nextLong(), 500, Subject.Chinese, 8, 12, new Dictation(), new GuoQinLun()));
-    peoples.add(new People("陆玉梅", random.nextLong(), 500, Subject.Music, 8, 12));
+    peoples.add(new People("陆玉梅", random.nextLong(), 500, Subject.Music, 8, 12,new ToBeLate()));
     this.addPositiveSkill(new AddHp());
-    this.addPositiveSkill(new ToBeLate());
   }
 
   public List<People> getPeople() {
@@ -45,6 +44,6 @@ public class DataManager {
   }
 
   public void addPositiveSkill(SkillBase skill) {
-    positiveSkills.add(skill);
+    People.commonSkills.add(skill);
   }
 }
