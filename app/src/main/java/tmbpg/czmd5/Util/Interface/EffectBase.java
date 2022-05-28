@@ -3,33 +3,40 @@ package tmbpg.czmd5.Util.Interface;
 import tmbpg.czmd5.Util.People;
 
 public abstract class EffectBase {
-  protected int timeLast = 0;
+  protected int timeLast;
+  private final People source, target;
+
+  public EffectBase(People source, People target) {
+    this.source = source;
+    this.target = target;
+    timeLast = this.getTime();
+  }
 
   public int getTimeLast() {
     return this.timeLast;
   }
 
-  public void resetTimeLast() {
-    this.timeLast = 0;
-  }
-
-  public int getTimeRemain() {
-    return this.getTime() - this.timeLast;
-  }
-
   public void addTime() {
-    this.timeLast -= this.getTime();
+    this.timeLast += this.getTime();
   }
-
-  public abstract String getName();
 
   public void tick() {
-    timeLast++;
+    timeLast--;
   }
 
   public boolean isTimeOut() {
-    return timeLast >= getTime();
+    return timeLast < 0;
   }
+
+  public People getSource() {
+    return source;
+  }
+
+  public People getTarget() {
+    return target;
+  }
+
+  public abstract String getName();
 
   public abstract int getTime();
 

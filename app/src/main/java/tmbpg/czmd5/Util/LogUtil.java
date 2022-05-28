@@ -9,6 +9,10 @@ public class LogUtil {
     System.out.println(color.getColor() + msg + TextColor.Default.getColor());
   }
 
+  public static void formatLog(String format, TextColor color, Object... args) {
+    log(String.format(format, args), color);
+  }
+
   public enum TextColor {
     Default("\u001B[0m"),
     GREEN("\033[32m"),

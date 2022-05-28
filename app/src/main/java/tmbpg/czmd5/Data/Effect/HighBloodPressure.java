@@ -4,6 +4,10 @@ import tmbpg.czmd5.Util.People;
 import tmbpg.czmd5.Util.Interface.EffectBase;
 
 public class HighBloodPressure extends EffectBase {
+  public HighBloodPressure(People source, People target) {
+    super(source, target);
+  }
+
   @Override
   public int getTime() {
     return 10;

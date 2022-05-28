@@ -4,6 +4,13 @@ import tmbpg.czmd5.Util.People;
 import tmbpg.czmd5.Util.Interface.EffectBase;
 
 public class HiddenEffect extends EffectBase {
+  private final int time;
+
+  public HiddenEffect(People source, People target, int time) {
+    super(source, target);
+    this.timeLast = this.time = time;
+  }
+
   @Override
   public String getName() {
     return "隐身";
@@ -11,7 +18,7 @@ public class HiddenEffect extends EffectBase {
 
   @Override
   public int getTime() {
-    return 10;
+    return time;
   }
 
   @Override

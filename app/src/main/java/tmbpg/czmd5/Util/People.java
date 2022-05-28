@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import tmbpg.czmd5.Data.GlobalSettings;
 import tmbpg.czmd5.Util.Enum.Subject;
 import tmbpg.czmd5.Util.Interface.EffectBase;
 import tmbpg.czmd5.Util.Interface.SkillBase;
@@ -17,8 +16,8 @@ public class People {
   private final Subject subject;
   private final int damageBaseMin, damageBaseMax;
   private final List<SkillBase> skills = new ArrayList<>();
-  private final List<Pair<EffectBase, People>> effects = new ArrayList<>();
-  private int score = 0, skipTurns = 0;
+  private final List<EffectBase> effects = new ArrayList<>();
+  private int score = 0;
   private float damageMul = 1;
   private boolean hidden = false;
 
@@ -38,10 +37,6 @@ public class People {
     return (damageBaseMin + damageBaseMax) / 2;
   }
 
-  public boolean shouldAttack() {
-    return random.nextInt(GlobalSettings.attackProbability) == 0;
-  }
-
   public String getName() {
     return name;
   }
@@ -52,43 +47,34 @@ public class People {
     return (int) ((random.nextInt(damageBaseMax - damageBaseMin + 1) + damageBaseMin) * damageMul);
   }
 
-  public int getSkipTurns() {
-    return skipTurns;
-  }
-
   public void tickEffects() {
-    if (skipTurns > 0) {
-      skipTurns--;
-      return;
-    }
-    List<Pair<EffectBase, People>> timeout = new ArrayList<>();
-    for (Pair<EffectBase, People> effect : effects) {
-      effect.getFirst().execute(this, effect.getSecond());
-      effect.getFirst().tick();
-      if (effect.getFirst().isTimeOut()) {
-        LogUtil.log(String.format("%s 的效果 %s 已失效", this.name, effect.getFirst().getName()), TextColor.MAGENTA);
+    List<EffectBase> timeout = new ArrayList<>();
+    for (EffectBase effect : effects) {
+      effect.execute(this, effect.getSource());
+      effect.tick();
+      if (effect.isTimeOut()) {
+        LogUtil.formatLog("%s 的效果 %s 已失效", TextColor.MAGENTA, this.name, effect.getName());
         timeout.add(effect);
-        effect.getFirst().remove(this);
+        effect.remove(this);
       }
       if (this.isDead()) {
-        LogUtil.log(
-            String.format("%s 被 %s 施加的 %s 效果杀死了", this.name, effect.getSecond().getName(), effect.getFirst().getName()),
-            TextColor.RED);
+        LogUtil.formatLog("%s 被 %s 施加的 %s 效果杀死了", TextColor.RED, this.name, effect.getSource().getName(),
+            effect.getName());
         return;
       }
     }
     effects.removeAll(timeout);
   }
 
-  public void addEffect(EffectBase effect, People source) {
-    for (Pair<EffectBase, People> e : effects)
-      if (e.getFirst().getClass().equals(effect.getClass())) {
-        e.getFirst().addTime();
-        LogUtil.log(String.format("效果 %s 叠加至 %d 回合", e.getFirst().getName(), e.getFirst().getTimeRemain()),
-            TextColor.BLUE);
+  public void addEffect(EffectBase effect) {
+    LogUtil.formatLog("%s 获得效果： %s ，持续 %d 回合", TextColor.MAGENTA, this.getName(), effect.getName(), effect.getTime());
+    for (EffectBase e : effects)
+      if (e.getClass().equals(effect.getClass())) {
+        e.addTime();
+        LogUtil.formatLog("效果 %s 叠加至 %d 回合", TextColor.BLUE, e.getName(), e.getTimeLast());
         return;
       }
-    effects.add(Pair.of(effect, source));
+    effects.add(effect);
     effect.apply(this);
   }
 
@@ -139,10 +125,6 @@ public class People {
 
   public void setDamageMul(float damageMul) {
     this.damageMul = damageMul;
-  }
-
-  public void setSkipTurns(int skipTurns) {
-    this.skipTurns = skipTurns;
   }
 
   public float getDamageMul() {

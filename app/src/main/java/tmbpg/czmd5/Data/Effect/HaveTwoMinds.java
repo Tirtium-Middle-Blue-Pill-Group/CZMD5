@@ -4,6 +4,9 @@ import tmbpg.czmd5.Util.People;
 import tmbpg.czmd5.Util.Interface.EffectBase;
 
 public class HaveTwoMinds extends EffectBase {
+  public HaveTwoMinds(People source, People target) {
+    super(source, target);
+  }
 
   @Override
   public String getName() {

@@ -27,8 +27,8 @@ public class DramaPerformance implements MathSkill {
   }
 
   @Override
-  public EffectBase[] getEffects() {
-    return new EffectBase[] { new HaveTwoMinds() };
+  public EffectBase[] getEffectsForTarget(People source,People target) {
+    return new EffectBase[] { new HaveTwoMinds(source, target) };
   }
 
   @Override

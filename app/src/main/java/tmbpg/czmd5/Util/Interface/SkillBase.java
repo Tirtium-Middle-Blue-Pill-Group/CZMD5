@@ -11,11 +11,11 @@ public interface SkillBase {
 
   public int execute(People source, People target);
 
-  default public EffectBase[] getEffects(){
+  default public EffectBase[] getEffectsForTarget(People source,People target) {
     return EMPTY;
   }
 
-  default public EffectBase[] getEffectsForSource(){
+  default public EffectBase[] getEffectsForSource(People source,People target) {
     return EMPTY;
   }
 

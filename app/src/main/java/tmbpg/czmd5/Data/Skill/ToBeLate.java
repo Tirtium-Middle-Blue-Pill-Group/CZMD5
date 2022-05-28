@@ -23,8 +23,8 @@ public class ToBeLate implements MusicSkill {
   }
 
   @Override
-  public EffectBase[] getEffects() {
-    return new EffectBase[] { new HiddenEffect() };
+  public EffectBase[] getEffectsForSource(People source, People target) {
+    return new EffectBase[] { new HiddenEffect(source, target, 10) };
   }
 
   @Override

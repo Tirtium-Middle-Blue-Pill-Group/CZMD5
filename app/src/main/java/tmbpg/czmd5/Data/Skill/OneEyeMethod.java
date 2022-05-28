@@ -33,8 +33,8 @@ public class OneEyeMethod implements MathSkill, ChemistrySkill {
   }
 
   @Override
-  public EffectBase[] getEffects() {
-    return new EffectBase[] { new HighBloodPressure() };
+  public EffectBase[] getEffectsForTarget(People source,People target) {
+    return new EffectBase[] { new HighBloodPressure(source, target) };
   }
 
   @Override

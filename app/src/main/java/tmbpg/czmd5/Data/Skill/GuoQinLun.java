@@ -1,7 +1,9 @@
 package tmbpg.czmd5.Data.Skill;
 
+import tmbpg.czmd5.Data.Effect.HiddenEffect;
 import tmbpg.czmd5.Util.People;
 import tmbpg.czmd5.Util.Enum.Subject;
+import tmbpg.czmd5.Util.Interface.EffectBase;
 import tmbpg.czmd5.Util.Interface.SkillBase.ChineseSkill;
 
 public class GuoQinLun implements ChineseSkill {
@@ -21,8 +23,12 @@ public class GuoQinLun implements ChineseSkill {
   public int execute(People source, People target) {
     target.damage(damage);
     source.addScore(damage);
-    target.setSkipTurns(2);
     return 0;
+  }
+
+  @Override
+  public EffectBase[] getEffectsForTarget(People source, People target) {
+    return new EffectBase[] { new HiddenEffect(source, target, 2) };
   }
 
   @Override

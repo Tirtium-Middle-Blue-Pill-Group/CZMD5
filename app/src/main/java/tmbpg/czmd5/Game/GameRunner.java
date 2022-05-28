@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import tmbpg.czmd5.Data.GlobalSettings;
-import tmbpg.czmd5.Util.DeadCycleException;
 import tmbpg.czmd5.Util.LogUtil;
+import tmbpg.czmd5.Util.Pair;
 import tmbpg.czmd5.Util.People;
 import tmbpg.czmd5.Util.Interface.EffectBase;
 import tmbpg.czmd5.Util.Interface.SkillBase;
@@ -47,62 +46,42 @@ public class GameRunner {
     if (alivePeoples.size() == 1)
       throw new RuntimeException("就一个人了你玩个锤子");
     tick++;
+    // 检查这回合是否能进行
+    if (!this.canTick()) {
+      LogUtil.formatLog("第%d回合，无事发生", TextColor.YELLOW, tick);
+      return true;
+    }
     List<People> dead = new ArrayList<>();
-    // 选择
-    People source = alivePeoples.get(random.nextInt(alivePeoples.size()));
-    int count = 0;
-    while (source.getSkipTurns() > 0) {
-      source = alivePeoples.get(random.nextInt(alivePeoples.size()));
-      if (count++ > GlobalSettings.cycleTimeOut)
-        throw new DeadCycleException();
-    }
-    People target = alivePeoples.get(random.nextInt(alivePeoples.size()));
-    count = 0;
-    while (target.getName().equals(source.getName()) || target.getSkipTurns() > 0 || target.isHidden()) {
-      target = alivePeoples.get(random.nextInt(alivePeoples.size()));
-      if (count++ > GlobalSettings.cycleTimeOut)
-        throw new DeadCycleException();
-    }
-    // 执行
-    int damage = source.getDamageAmount(target);
-    source.addScore(damage);
-    target.damage(damage);
-    LogUtil.log(String.format("第%d回合：%s 攻击了 %s ，血量%d->%d", tick, source.getName(), target.getName(),
-        target.getHp() + damage, target.getHp()), TextColor.YELLOW);
-    // 攻击别人的技能
-    for (SkillBase skill : source.getSkills())
-      if (source.nextInt(skill.getTriggerProb()) == 0) {
-        if (!skill.shouldExecute(source, target, damage)) {
-          LogUtil.log(String.format("%s 额外触发技能 %s ， 但是没效果", source.getName(), skill.getName()), TextColor.CYAN);
+    // 执行攻击
+    Pair<People, People> people = this.chooseTwoPeople();
+    int damage = people.getFirst().getDamageAmount(people.getSecond());
+    people.getFirst().addScore(damage);
+    people.getSecond().damage(damage);
+    LogUtil.log(String.format("第%d回合：%s 攻击了 %s ，血量%d->%d", tick, people.getFirst().getName(),
+        people.getSecond().getName(), people.getSecond().getHp() + damage, people.getSecond().getHp()),
+        TextColor.YELLOW);
+    // 执行技能
+    for (SkillBase skill : people.getFirst().getSkills())
+      if (people.getFirst().nextInt(skill.getTriggerProb()) == 0) {
+        if (!skill.shouldExecute(people.getFirst(), people.getSecond(), damage)) {
+          LogUtil.log(String.format("%s 额外触发技能 %s ， 但是没效果", people.getFirst().getName(), skill.getName()),
+              TextColor.CYAN);
           continue;
         }
-        skill.execute(source, target);
-        LogUtil.log(
-            String.format("%s 额外触发技能 %s ，", source.getName(), skill.getName()) + skill.getMessage(source, target),
-            TextColor.CYAN);
-        for (EffectBase effect : skill.getEffects()) {
-          LogUtil.log(String.format("%s 获得效果： %s ，持续 %d 回合", target.getName(), effect.getName(), effect.getTime()),
-              TextColor.MAGENTA);
-          target.addEffect(effect, source);
-        }
+        skill.execute(people.getFirst(), people.getSecond());
+        LogUtil.log(String.format("%s 额外触发技能 %s ，", people.getFirst().getName(), skill.getName())
+            + skill.getMessage(people.getFirst(), people.getSecond()), TextColor.CYAN);
+        if (skill.getEffectsForSource(people.getFirst(), people.getSecond()) != SkillBase.EMPTY)
+          for (EffectBase effect : skill.getEffectsForSource(people.getFirst(), people.getSecond()))
+            people.getFirst().addEffect(effect);
+        if (skill.getEffectsForTarget(people.getFirst(), people.getSecond()) != SkillBase.EMPTY)
+          for (EffectBase effect : skill.getEffectsForTarget(people.getFirst(), people.getSecond()))
+            people.getSecond().addEffect(effect);
       }
-    // 给自己的技能
-    for (SkillBase skill2 : dataManager.getPositiveSkills())
-      if (source.nextInt(skill2.getTriggerProb()) == 0)
-        if (skill2.shouldExecute(source, target, damage)) {
-          skill2.execute(source, target);
-          LogUtil.log(
-              String.format("%s 额外触发技能 %s ，", source.getName(), skill2.getName()) + skill2.getMessage(source, target),
-              TextColor.CYAN);
-          for (EffectBase effect : skill2.getEffects()) {
-            LogUtil.log(String.format("%s 获得效果： %s ，持续 %d 回合", source.getName(), effect.getName(), effect.getTime()),
-                TextColor.MAGENTA);
-            source.addEffect(effect, source);
-          }
-        }
-    if (target.isDead()) {
-      LogUtil.log(String.format("%s 被 %s 杀死了", target.getName(), source.getName()), TextColor.RED);
-      alivePeoples.remove(target);
+    if (people.getSecond().isDead()) {
+      LogUtil.log(String.format("%s 被 %s 杀死了", people.getSecond().getName(), people.getFirst().getName()),
+          TextColor.RED);
+      alivePeoples.remove(people.getSecond());
     }
     // 运行每个人的效果
     for (People p : alivePeoples) {
@@ -112,6 +91,27 @@ public class GameRunner {
     }
     alivePeoples.removeAll(dead);
     return alivePeoples.size() > 1;
+  }
+
+  private boolean canTick() {
+    int canExecutePeople = 0;
+    for (People people : alivePeoples) {
+      if (!people.isHidden())
+        canExecutePeople++;
+      if (canExecutePeople > 1)
+        return true;
+    }
+    return false;
+  }
+
+  private Pair<People, People> chooseTwoPeople() {
+    int index1 = random.nextInt(alivePeoples.size());
+    while (alivePeoples.get(index1).isHidden())
+      index1 = random.nextInt(alivePeoples.size());
+    int index2 = random.nextInt(alivePeoples.size());
+    while (index1 == index2 || alivePeoples.get(index2).isHidden())
+      index2 = random.nextInt(alivePeoples.size());
+    return new Pair<>(alivePeoples.get(index1), alivePeoples.get(index2));
   }
 
   public People getWinner() {
