@@ -23,6 +23,9 @@ public class GameRunner {
     dataManager = new DataManager(random);
   }
 
+  /**
+   * 运行游戏
+   */
   public void run() {
     LogUtil.log("游戏开始", TextColor.GREEN);
     for (People people : dataManager.getPeople()) {
@@ -101,6 +104,11 @@ public class GameRunner {
     return false;
   }
 
+  /**
+   * 随机选择两个人
+   * 
+   * @return 两个人的Pair
+   */
   private Pair<People, People> chooseTwoPeople() {
     int index1 = random.nextInt(alivePeoples.size());
     while (alivePeoples.get(index1).isHidden())
@@ -111,6 +119,12 @@ public class GameRunner {
     return new Pair<>(alivePeoples.get(index1), alivePeoples.get(index2));
   }
 
+  /**
+   * 获取胜利者
+   * 
+   * @return 胜利者
+   * @throws RuntimeException 如果没有人胜利
+   */
   public People getWinner() {
     if (alivePeoples.size() == 1)
       return alivePeoples.get(0);

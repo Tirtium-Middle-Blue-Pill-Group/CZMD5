@@ -1,14 +1,32 @@
 package tmbpg.czmd5.Util;
 
 public class LogUtil {
+  /**
+   * 打印日志
+   * 
+   * @param msg 内容
+   */
   public static void log(String msg) {
     System.out.println(msg);
   }
 
+  /**
+   * 打印日志
+   * 
+   * @param msg   内容
+   * @param color 文字颜色
+   */
   public static void log(String msg, TextColor color) {
     System.out.println(color.getColor() + msg + TextColor.Default.getColor());
   }
 
+  /**
+   * 打印日志
+   * 
+   * @param format 内容格式（详见{@link String#format(String, Object...)}）
+   * @param color  文字颜色
+   * @param args   参数
+   */
   public static void formatLog(String format, TextColor color, Object... args) {
     log(String.format(format, args), color);
   }
